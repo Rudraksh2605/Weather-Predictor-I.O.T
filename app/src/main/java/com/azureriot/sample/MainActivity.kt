@@ -95,8 +95,8 @@ class MainActivity : AppCompatActivity() {
 
     @Throws(JSONException::class)
     private fun parseJson(file: File) {
-        var data: String = ""
         val gson = Gson()
+
 
         try {
             BufferedReader(InputStreamReader(FileInputStream(file))).use { reader ->
@@ -107,8 +107,10 @@ class MainActivity : AppCompatActivity() {
 
                     // Output the parsed data
                     println("Parsed data:")
-                    for (i in 0 until jsonArray.size()) {
-                        val jsonObject: JsonObject = jsonArray.get(i).asJsonObject
+
+
+                    if (jsonArray.size() > 0) {
+                        val jsonObject: JsonObject = jsonArray.get(0).asJsonObject
                         val temperature = jsonObject.get("temperature").asDouble
                         val humidity = jsonObject.get("humidity").asDouble
 
@@ -125,6 +127,8 @@ class MainActivity : AppCompatActivity() {
         } finally {
             Log.d("Status", "Retrieved")
         }
+
+
     }
 
     private fun updateUI(jsonContent: String) {
@@ -133,19 +137,17 @@ class MainActivity : AppCompatActivity() {
         // Deserialize the JSON string into WeatherData object
         val weatherData = gson.fromJson(jsonContent, WeatherData::class.java)
 
-        // Parse timestamp to Date object
-//        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-//        val timestamp = sdf.parse(weatherData.timestamp)
 
         // Access relevant data
         val temperature = weatherData.temperature
         val humidity = weatherData.humidity
 
         // Print the relevant data
-//        println("Timestamp: $timestamp")
         println("Temperature: $temperature")
         println("Humidity: $humidity")
-        runOnUiThread { tv!!.text =  "Temperature: "+ temperature + "\n"+ "Humidity: " + humidity }
+        runOnUiThread {
+            tv!!.text =  "Temperature: "+ temperature + "\n"+ "Humidity: " + humidity
+        }
     }
 
 
